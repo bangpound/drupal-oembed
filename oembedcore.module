@@ -7,6 +7,26 @@
  */
 
 /**
+ * Implementation of hook_help().
+ */
+function oembedcore_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#oembedcore':
+      $output = '<p>'. t('oEmbed module will allow your Drupal site to embed content from <a href="@oembed">oEmbed</a>-providers as well as for the site to become an oEmbed-provider itself so that other oEmbed-enabled websites can easily embed your content.', array('@oembed' => 'http://www.oembed.com/')) .'</p>';
+      $output .= '<p>'. t('Create <a href="@preset">presets</a> to customize the way oEmbed content appears on your site.', array('@preset' => url('admin/build/oembed/preset'))) .'</p>';
+      $output .= '<p>'. t('Add or enable <a href="@provider">providers</a> to embed content from other sites.', array('@provider' => url('admin/build/oembed/provider'))) .'</p>';
+      return $output;
+    case 'admin/build/oembed':
+    case 'admin/build/oembed/preset':
+      $output = '<p>'. t('Presets are the dimensions and other display properties of content embedded on your site.') .'</p>';
+      return $output;
+    case 'admin/build/oembed/provider':
+      $output = '<p>'. t('Providers are other web sites with oEmbed endpoints whose content you can embed on your site.') .'</p>';
+      return $output;
+  }
+}
+
+/**
  * Implementation of hook_perm().
  */
 function oembedcore_perm() {
