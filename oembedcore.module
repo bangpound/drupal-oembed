@@ -7,126 +7,126 @@
  */
 
 /**
- * Implementation of hook_perm().
+ * Implements of hook_perm().
  */
 function oembedcore_perm() {
   return array('administer oembed presets');
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements of hook_menu().
  */
 function oembedcore_menu() {
   $items = array();
 
   $base = array(
     'access arguments' => array('administer oembed presets'),
-    'file'             => 'oembedcore.admin.inc',
+    'file' => 'oembedcore.admin.inc',
   );
 
-  $items['admin/build/oembed'] = array(
-    'title'          => 'OEmbed',
-    'description'    => 'Admin overview of OEmbed.',
-    'page callback'  => 'oembedcore_list_preset',
+  $items['admin/structure/oembed'] = array(
+    'title' => 'OEmbed',
+    'description' => 'Admin overview of OEmbed.',
+    'page callback' => 'oembedcore_list_preset',
   ) + $base;
 
-  $items['admin/build/oembed/preset'] = array(
-    'title'          => 'Presets',
-    'description'    => 'Add, edit and remove oembed preset from the system.',
-    'page callback'  => 'oembedcore_list_preset',
-    'type'           => MENU_DEFAULT_LOCAL_TASK,
+  $items['admin/structure/oembed/preset'] = array(
+    'title' => 'Presets',
+    'description' => 'Add, edit and remove oembed preset from the system.',
+    'page callback' => 'oembedcore_list_preset',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/preset/list'] = array(
-    'title'          => 'List presets',
-    'page callback'  => 'oembedcore_list_preset',
-    'type'           => MENU_DEFAULT_LOCAL_TASK,
-    'weight'         => -10,
+  $items['admin/structure/oembed/preset/list'] = array(
+    'title' => 'List presets',
+    'page callback' => 'oembedcore_list_preset',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
   ) + $base;
-  $items['admin/build/oembed/preset/add'] = array(
-    'title'          => 'Add preset',
-    'page callback'  => 'oembedcore_add_preset',
-    'type'           => MENU_LOCAL_TASK,
+  $items['admin/structure/oembed/preset/add'] = array(
+    'title' => 'Add preset',
+    'page callback' => 'oembedcore_add_preset',
+    'type' => MENU_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/preset/%oembedcore_preset/edit'] = array(
-    'title'          => 'Edit preset',
-    'page callback'  => 'oembedcore_edit_preset',
+  $items['admin/structure/oembed/preset/%oembedcore_preset/edit'] = array(
+    'title' => 'Edit preset',
+    'page callback' => 'oembedcore_edit_preset',
     'page arguments' => array(4),
-    'type'           => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/preset/%oembedcore_preset/export'] = array(
-    'title'          => 'Export preset',
-    'page callback'  => 'drupal_get_form',
+  $items['admin/structure/oembed/preset/%oembedcore_preset/export'] = array(
+    'title' => 'Export preset',
+    'page callback' => 'drupal_get_form',
     'page arguments' => array('oembedcore_export_preset', 4),
-    'type'           => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/preset/%oembedcore_preset/delete'] = array(
-    'title'          => 'Delete preset',
-    'page callback'  => 'drupal_get_form',
+  $items['admin/structure/oembed/preset/%oembedcore_preset/delete'] = array(
+    'title' => 'Delete preset',
+    'page callback' => 'drupal_get_form',
     'page arguments' => array('oembedcore_delete_confirm_preset', 4),
-    'type'           => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   ) + $base;
-  $items['admin/build/oembed/preset/%oembedcore_preset/disable'] = array(
-    'page callback'  => 'oembedcore_disable_preset',
+  $items['admin/structure/oembed/preset/%oembedcore_preset/disable'] = array(
+    'page callback' => 'oembedcore_disable_preset',
     'page arguments' => array(4),
-    'type'           => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   ) + $base;
-  $items['admin/build/oembed/preset/%oembedcore_preset/enable'] = array(
-    'page callback'  => 'oembedcore_enable_preset',
+  $items['admin/structure/oembed/preset/%oembedcore_preset/enable'] = array(
+    'page callback' => 'oembedcore_enable_preset',
     'page arguments' => array(4),
-    'type'           => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   ) + $base;
 
-  $items['admin/build/oembed/provider'] = array(
-    'title'          => 'Providers',
-    'description'    => 'Add, edit and remove oembed providers from the system.',
-    'page callback'  => 'oembedcore_list_provider',
-    'type'           => MENU_LOCAL_TASK,
+  $items['admin/structure/oembed/provider'] = array(
+    'title' => 'Providers',
+    'description' => 'Add, edit and remove oembed providers from the system.',
+    'page callback' => 'oembedcore_list_provider',
+    'type' => MENU_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/provider/list'] = array(
-    'title'          => 'List providers',
-    'page callback'  => 'oembedcore_list_provider',
-    'type'           => MENU_DEFAULT_LOCAL_TASK,
-    'weight'         => -10,
+  $items['admin/structure/oembed/provider/list'] = array(
+    'title' => 'List providers',
+    'page callback' => 'oembedcore_list_provider',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
   ) + $base;
-  $items['admin/build/oembed/provider/add'] = array(
-    'title'          => 'Add provider',
-    'page callback'  => 'oembedcore_add_provider',
-    'type'           => MENU_LOCAL_TASK,
+  $items['admin/structure/oembed/provider/add'] = array(
+    'title' => 'Add provider',
+    'page callback' => 'oembedcore_add_provider',
+    'type' => MENU_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/provider/%oembedcore_provider/edit'] = array(
-    'title'          => 'Edit provider',
-    'page callback'  => 'oembedcore_edit_provider',
+  $items['admin/structure/oembed/provider/%oembedcore_provider/edit'] = array(
+    'title' => 'Edit provider',
+    'page callback' => 'oembedcore_edit_provider',
     'page arguments' => array(4),
-    'type'           => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/provider/%oembedcore_provider/export'] = array(
-    'title'          => 'Export provider',
-    'page callback'  => 'drupal_get_form',
+  $items['admin/structure/oembed/provider/%oembedcore_provider/export'] = array(
+    'title' => 'Export provider',
+    'page callback' => 'drupal_get_form',
     'page arguments' => array('oembedcore_export_provider', 4),
-    'type'           => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
   ) + $base;
-  $items['admin/build/oembed/provider/%oembedcore_provider/delete'] = array(
-    'title'          => 'Delete provider',
-    'page callback'  => 'drupal_get_form',
+  $items['admin/structure/oembed/provider/%oembedcore_provider/delete'] = array(
+    'title' => 'Delete provider',
+    'page callback' => 'drupal_get_form',
     'page arguments' => array('oembedcore_delete_confirm_provider', 4),
-    'type'           => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   ) + $base;
-  $items['admin/build/oembed/provider/%oembedcore_provider/disable'] = array(
-    'page callback'  => 'oembedcore_disable_provider',
+  $items['admin/structure/oembed/provider/%oembedcore_provider/disable'] = array(
+    'page callback' => 'oembedcore_disable_provider',
     'page arguments' => array(4),
-    'type'           => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   ) + $base;
-  $items['admin/build/oembed/provider/%oembedcore_provider/enable'] = array(
-    'page callback'  => 'oembedcore_enable_provider',
+  $items['admin/structure/oembed/provider/%oembedcore_provider/enable'] = array(
+    'page callback' => 'oembedcore_enable_provider',
     'page arguments' => array(4),
-    'type'           => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   ) + $base;
 
   return $items;
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements of hook_theme().
  */
 function oembedcore_theme() {
   $path = drupal_get_path('module', 'oembedcore') . '/theme';
@@ -141,7 +141,7 @@ function oembedcore_theme() {
 }
 
 /**
- * Implementation of hook_default_oembedcore_provider().
+ * Implements of hook_default_oembedcore_provider().
  */
 function oembedcore_default_oembedcore_provider() {
   $providers = array();
@@ -349,7 +349,7 @@ function oembedcore_oembed_fetch($provider, $url, $matches, $attributes = array(
     if (!empty($provider['callback'])) {
       $embed = call_user_func($provider['callback'], $provider, $url, $matches, $attributes);
       if ($embed) {
-        $embed = (object)$embed;
+        $embed = (object) $embed;
       }
     }
     else {
@@ -362,7 +362,7 @@ function oembedcore_oembed_fetch($provider, $url, $matches, $attributes = array(
         if (!is_object($embed)) {
           try {
             $embed = @new SimpleXMLElement($response->data);
-            $embed = (object)get_object_vars($embed);
+            $embed = (object) get_object_vars($embed);
             if (!is_string($embed->title)) {
               $embed->title = '';
             }
@@ -387,7 +387,7 @@ function oembedcore_oembed_fetch($provider, $url, $matches, $attributes = array(
     }
 
     $max_age = isset($embed->cache_age) ? intval($embed->cache_age) : empty($provider['callback']) ? 600 : 60;
-    cache_set($cache_key, $embed, 'cache', time() + $max_age);
+    cache_set($cache_key, $embed, 'cache', REQUEST_TIME + $max_age);
   }
 
   return $embed;
@@ -402,19 +402,19 @@ function oembedcore_oembed_html($embed, $url) {
   switch ($embed->type) {
     case 'photo':
       $return  = '<span class="oembed">';
-        if (!empty($embed->title)) {
-          $return .= l($embed->title, $url, array('absolute' => TRUE, 'attributes' => array('class' => 'oembed-title')));
-        }
-        $return .= ' ' . l('<img src="' . check_url($embed->url) . '" />', $url, array('html' => TRUE, 'absolute' => TRUE, 'attributes' => array('class' => 'oembed-photo oembed-content')));
+      if (!empty($embed->title)) {
+        $return .= l($embed->title, $url, array('absolute' => TRUE, 'attributes' => array('class' => 'oembed-title')));
+      }
+      $return .= ' ' . l('<img src="' . check_url($embed->url) . '" />', $url, array('html' => TRUE, 'absolute' => TRUE, 'attributes' => array('class' => 'oembed-photo oembed-content')));
       $return .= '</span>';
       break;
     case 'rich':
     case 'video':
       $return  = '<div class="oembed">';
-        if (!empty($embed->title)) {
-          $return .= l($embed->title, $url, array('absolute' => TRUE, 'attributes' => array('class' => 'oembed-title')));
-        }
-        $return .= ' <span class="oembed-content oembed-' . ($embed->type == 'video' ? 'video' : 'rich') . '">' . $embed->html . '</span>';
+      if (!empty($embed->title)) {
+        $return .= l($embed->title, $url, array('absolute' => TRUE, 'attributes' => array('class' => 'oembed-title')));
+      }
+      $return .= ' <span class="oembed-content oembed-' . ($embed->type == 'video' ? 'video' : 'rich') . '">' . $embed->html . '</span>';
       $return .= '</div>';
       break;
     case 'link':
@@ -480,7 +480,7 @@ function oembedcore_preset_save(&$preset) {
   //TODO: Extract this and move to oembedfield
   if (module_exists('content')) {
     content_clear_type_cache();
-    drupal_rebuild_theme_registry();
+    drupal_theme_rebuild();
   }
   return $preset;
 }
@@ -489,12 +489,17 @@ function oembedcore_preset_save(&$preset) {
  * Remove a preset.
  */
 function oembedcore_preset_delete($preset) {
-  db_query("DELETE FROM {oembedcore_preset} WHERE name = '%s' AND pid = %d", $preset->name, $preset->pid);
+  // TODO Please review the conversion of this statement to the D7 database API syntax.
+  /* db_query("DELETE FROM {oembedcore_preset} WHERE name = '%s' AND pid = %d", $preset->name, $preset->pid) */
+  db_delete('oembedcore_preset')
+  ->condition('name', $preset->name)
+  ->condition('pid', $preset->pid)
+  ->execute();
   // Clear the content.module cache (refreshes the list of formatters provided by oembedfield.module).
   //TODO: Extract this and move to oembedfield
   if (module_exists('content')) {
     content_clear_type_cache();
-    drupal_rebuild_theme_registry();
+    drupal_theme_rebuild();
   }
 }
 
@@ -566,7 +571,12 @@ function oembedcore_provider_save(&$provider) {
  * Remove a provider.
  */
 function oembedcore_provider_delete($provider) {
-  db_query("DELETE FROM {oembedcore_provider} WHERE name = '%s' AND pid = %d", $provider->name, $provider->pid);
+  // TODO Please review the conversion of this statement to the D7 database API syntax.
+  /* db_query("DELETE FROM {oembedcore_provider} WHERE name = '%s' AND pid = %d", $provider->name, $provider->pid) */
+  db_delete('oembedcore_provider')
+  ->condition('name', $provider->name)
+  ->condition('pid', $provider->pid)
+  ->execute();
   cache_clear_all('oembedcore:providers', 'cache');
 }
 

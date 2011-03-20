@@ -58,6 +58,7 @@ function oembedprovider_node_provider($provider, $url, $matches) {
  *  The html representation of the node
  */
 function theme_oembed_node($node) {
+  // TODO: Should this theme oembed_node be declared in hook_theme()?
   $node = node_build_content($node, TRUE, FALSE);
 
   // Set the proper node part, then unset unused $node part so that a bad
@@ -67,7 +68,7 @@ function theme_oembed_node($node) {
   unset($node->body);
 
   // Allow modules to modify the fully-built node.
-  node_invoke_nodeapi($node, 'alter', TRUE, FALSE);
+  module_invoke_all('node_build_alter', $node, TRUE);
 
   return theme('node', $node, TRUE, FALSE);
 }

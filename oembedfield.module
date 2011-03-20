@@ -21,7 +21,7 @@ function oembedfield_field_formatter_info() {
   foreach (oembedcore_preset_load_all() as $preset) {
     if (empty($preset->disabled)) {
       $formatters['oembed_' . $preset->name . '_default'] = array(
-        'label'       => t('OEmbed, preset @preset', array('@preset' => $preset->name)),
+        'label' => t('OEmbed, preset @preset', array('@preset' => $preset->name)),
         'field types' => array('link'),
       );
     }
@@ -35,9 +35,9 @@ function oembedfield_field_formatter_info() {
  */
 function oembedfield_theme() {
   $base = array(
-    'template'  => 'oembedfield-formatter-oembed-default',
-    'file'      => 'oembedfield_theme.inc',
-    'path'      => drupal_get_path('module', 'oembedfield') . '/theme',
+    'template' => 'oembedfield-formatter-oembed-default',
+    'file' => 'oembedfield_theme.inc',
+    'path' => drupal_get_path('module', 'oembedfield') . '/theme',
     'arguments' => array('element' => NULL),
   );
   $theme = array(

@@ -10,14 +10,14 @@
 //TODO: delete options on uninstall
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function oembed_init() {
   drupal_add_css(drupal_get_path('module', 'oembed') . '/oembed.css');
 }
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function oembed_help($path, $arg) {
   switch ($path) {
@@ -27,39 +27,34 @@ function oembed_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_filter().
+ * Implements hook_filter_info().
  */
-function oembed_filter($op, $delta = 0, $format = -1, $text = '') {
-  switch ($op) {
-    case 'list':
-      return array(0 => t('oEmbed filter'));
-    case 'description':
-      switch ($delta) {
-        case 0:
-          return t('Embeds content for oEmbed-enabled web addresses and turns the rest, and e-mail addresses, into clickable links.');
-        default:
-          return;
-      }
+function oembed_filter_info() {
+  $filters['oembed'] = array(
+    'title' => t('oEmbed filter'),
+    'description' => t('Embeds content for oEmbed-enabled web addresses and turns the rest, and e-mail addresses, into clickable links.'),
+    'process callback' => 'oembed_filter_oembed_process',
+    'settings callback' => 'oembed_filter_oembed_settings',
+    'default settings' => array(
+      'oembed_maxwidth' => '',
+      'oembed_maxheight' => '',
+    ),
+  );
+  return $filters;
+}
 
-    case 'process':
-      switch ($delta) {
-        case 0:
-          module_load_include('inc', 'oembed');
-          return _oembed_filter_apply($text, $format);
-        default:
-          return $text;
-      }
+/**
+ * Implements hook_filter_FILTER_settings().
+ */
+function oembed_filter_oembed_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
+  module_load_include('inc', 'oembed');
+  return _oembed_filter_settings($form, $form_state, $filter, $format, $defaults);
+}
 
-    case 'settings':
-      switch ($delta) {
-        case 0:
-          module_load_include('inc', 'oembed');
-          return _oembed_filter_settings($format);
-        default:
-          return;
-      }
-
-    default:
-      return $text;
-  }
+/**
+ * Implements hook_filter_FILTER_process().
+ */
+function oembed_filter_oembed_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  module_load_include('inc', 'oembed');
+  return _oembed_filter_apply($text, $filter, $format, $langcode, $cache, $cache_id);
 }

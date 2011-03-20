@@ -13,13 +13,28 @@
  */
 function oembedcore_list_preset($js = NULL) {
   $header = array(
-    array('data' => t('Name'),    'class' => 'oembedcore-preset-name'),
-    array('data' => t('Width'),   'class' => 'oembedcore-preset-width'),
-    array('data' => t('Height'),  'class' => 'oembedcore-preset-height'),
-    array('data' => t('Storage'), 'class' => 'oembedcore-preset-storage'),
+    array(
+      'data' => t('Name'),
+      'class' => array('oembedcore-preset-name'),
+    ),
+    array(
+      'data' => t('Width'),
+      'class' => array('oembedcore-preset-width'),
+    ),
+    array(
+      'data' => t('Height'),
+      'class' => array('oembedcore-preset-height'),
+    ),
+    array(
+      'data' => t('Storage'),
+      'class' => array('oembedcore-preset-storage'),
+    ),
   );
 
-  $header[] = array('data' => t('Operations'), 'class' => 'oembedcore-preset-operations');
+  $header[] = array(
+    'data' => t('Operations'),
+    'class' => array('oembedcore-preset-operations'),
+  );
 
   $presets = oembedcore_preset_load_all();
   $rows = array();
@@ -30,37 +45,37 @@ function oembedcore_list_preset($js = NULL) {
     if (empty($preset->disabled)) {
       $operations[] = array(
         'title' => t('Edit'),
-        'href'  => 'admin/build/oembed/preset/' . $preset->name . '/edit',
+        'href' => 'admin/structure/oembed/preset/' . $preset->name . '/edit',
       );
       $operations[] = array(
         'title' => t('Export'),
-        'href'  => 'admin/build/oembed/preset/' . $preset->name . '/export',
+        'href' => 'admin/structure/oembed/preset/' . $preset->name . '/export',
       );
     }
 
     if ($preset->export_type == (EXPORT_IN_CODE | EXPORT_IN_DATABASE)) {
       $operations[] = array(
         'title' => t('Revert'),
-        'href'  => 'admin/build/oembed/preset/' . $preset->name . '/delete',
+        'href' => 'admin/structure/oembed/preset/' . $preset->name . '/delete',
       );
     }
     elseif ($preset->export_type != EXPORT_IN_CODE) {
       $operations[] = array(
         'title' => t('Delete'),
-        'href'  => 'admin/build/oembed/preset/' . $preset->name . '/delete',
+        'href' => 'admin/structure/oembed/preset/' . $preset->name . '/delete',
       );
     }
     elseif (empty($preset->disabled)) {
       $operations[] = array(
         'title' => t('Disable'),
-        'href'  => 'admin/build/oembed/preset/' . $preset->name . '/disable',
+        'href' => 'admin/structure/oembed/preset/' . $preset->name . '/disable',
         'query' => drupal_get_destination(),
       );
     }
     else {
       $operations[] = array(
         'title' => t('Enable'),
-        'href'  => 'admin/build/oembed/preset/' . $preset->name . '/enable',
+        'href' => 'admin/structure/oembed/preset/' . $preset->name . '/enable',
         'query' => drupal_get_destination(),
       );
     }
@@ -68,34 +83,39 @@ function oembedcore_list_preset($js = NULL) {
     $rows[$preset->name] = array(
       'data' => array(
         'name' => array(
-          'data'  => $preset->name,
-          'class' => 'oembedcore-preset-name',
+          'data' => $preset->name,
+          'class' => array('oembedcore-preset-name'),
         ),
         'width' => array(
-          'data'  => $preset->width,
-          'class' => 'oembedcore-preset-width',
+          'data' => $preset->width,
+          'class' => array('oembedcore-preset-width'),
         ),
         'height' => array(
-          'data'  => $preset->height,
-          'class' => 'oembedcore-preset-height',
+          'data' => $preset->height,
+          'class' => array('oembedcore-preset-height'),
         ),
         'storage' => array(
-          'data'  => ($preset->export_type == EXPORT_IN_CODE) ? t('In code') : t('In database'),
-          'class' => 'oembedcore-preset-storage',
+          'data' => ($preset->export_type == EXPORT_IN_CODE) ? t('In code') : t('In database'),
+          'class' => array('oembedcore-preset-storage'),
         ),
         'operations' => array(
-          'data'  => theme('links', $operations),
-          'class' => 'oembedcore-preset-operations',
+          'data' => theme('links', array('links' => $operations)),
+          'class' => array('oembedcore-preset-operations'),
         ),
       ),
-      'class' => 'oembedcore-preset-' . $preset->name . (!empty($preset->disabled) ? ' oembedcore-preset-disabled' : ''),
+      'class' => array('oembedcore-preset-' . $preset->name . (!empty($preset->disabled) ? ' oembedcore-preset-disabled' : '')),
       //'title => ??
     );
   }
 
-  $table = theme('table', $header, $rows, array('id' => 'oembedcore-list-preset'));
+  $vars = array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array('id' => 'oembedcore-list-preset'),
+  );
+  $table = theme('table', $vars);
 
-//  $operations = '<div id="oembedcore-links" class="links">' . theme('links', $pages['operations']) . '</div>';
+  //  $operations = '<div id="oembedcore-links" class="links">' . theme('links', $pages['operations']) . '</div>';
 
   drupal_add_css(drupal_get_path('module', 'oembedcore') . '/oembedcore.admin.css');
 
@@ -121,7 +141,7 @@ function oembedcore_edit_preset($preset) {
     $preset = oembedcore_preset_load($preset);
   }
   if ($preset) {
-    drupal_set_title(check_plain($preset->name));
+    drupal_set_title($preset->name);
   }
 
   return drupal_get_form('oembedcore_edit_form_preset', $preset);
@@ -130,51 +150,51 @@ function oembedcore_edit_preset($preset) {
 /**
  * Form to edit the settings of a preset.
  */
-function oembedcore_edit_form_preset(&$form_state, $preset) {
+function oembedcore_edit_form_preset($form, &$form_state, $preset) {
   $form = array();
 
   $form['pid'] = array(
-    '#type'  => 'value',
+    '#type' => 'value',
     '#value' => isset($preset->pid) ? $preset->pid : '',
   );
   $form['preset'] = array(
-    '#type'  => 'value',
+    '#type' => 'value',
     '#value' => $preset,
   );
 
   $form['name'] = array(
-    '#type'          => 'textfield',
-    '#size'          => 24,
+    '#type' => 'textfield',
+    '#size' => 24,
     '#default_value' => $preset->name,
-    '#title'         => t('Preset name'),
-    '#description'   => t('A unique machine-readable name used to identify this preset internally. It may only contain lowercase alphanumeric characters and underscores. No spaces or uppercase characters.'),
+    '#title' => t('Preset name'),
+    '#description' => t('A unique machine-readable name used to identify this preset internally. It may only contain lowercase alphanumeric characters and underscores. No spaces or uppercase characters.'),
   );
 
   $form['width'] = array(
-    '#type'          => 'textfield',
-    '#size'          => 6,
+    '#type' => 'textfield',
+    '#size' => 6,
     '#default_value' => $preset->width,
-    '#title'         => t('Max width'),
-    '#description'   => t('A maximum width in pixels of the embed or 0 for no maximum.'),
+    '#title' => t('Max width'),
+    '#description' => t('A maximum width in pixels of the embed or 0 for no maximum.'),
   );
 
   $form['height'] = array(
-    '#type'          => 'textfield',
-    '#size'          => 6,
+    '#type' => 'textfield',
+    '#size' => 6,
     '#default_value' => $preset->height,
-    '#title'         => t('Max height'),
-    '#description'   => t('A maximum height in pixels of the embed or 0 for no maximum.'),
+    '#title' => t('Max height'),
+    '#description' => t('A maximum height in pixels of the embed or 0 for no maximum.'),
   );
 
   $form['disable_title'] = array(
-    '#type'          => 'checkbox',
+    '#type' => 'checkbox',
     '#default_value' => !empty($preset->conf['disable_title']),
-    '#title'         => t('Disable title when other embeddable data is available'),
+    '#title' => t('Disable title when other embeddable data is available'),
   );
 
   $label = empty($preset->pid) ? t('Save and proceed') : t('Save');
   $form['submit'] = array(
-    '#type'  => 'submit',
+    '#type' => 'submit',
     '#value' => $label,
   );
 
@@ -194,11 +214,13 @@ function oembedcore_edit_form_preset_validate($form, &$form_state) {
     form_error($form['name'], t('The name may only contain lowercase alphanumeric characters and underscores.'));
   }
   else {
-    $query = "SELECT pid FROM {oembedcore_preset} WHERE name = '%s'";
+    $query = db_select('oembedcore_preset')
+      ->fields('oembedcore_preset', array('pid'))
+      ->condition('name', $values['name']);
     if (!empty($values['pid']) && is_numeric($values['pid'])) {
-      $query .= ' AND pid != ' . $values['pid'];
+      $query->condition('pid', $values['pid']);
     }
-    if (db_result(db_query($query, $values['name']))) {
+    if ($query->execute()->fetchCol()) {
       form_error($form['name'], t('Preset name must be unique.'));
     }
   }
@@ -235,8 +257,8 @@ function oembedcore_edit_form_preset_submit($form, &$form_state) {
 
   $preset->title  = $form_state['values']['title'];
   $preset->name   = $form_state['values']['name'];
-  $preset->width  = (int)$form_state['values']['width'];
-  $preset->height = (int)$form_state['values']['height'];
+  $preset->width  = (int) $form_state['values']['width'];
+  $preset->height = (int) $form_state['values']['height'];
 
   $preset->conf = array(
     'disable_title' => !empty($form_state['values']['disable_title']),
@@ -247,14 +269,14 @@ function oembedcore_edit_form_preset_submit($form, &$form_state) {
     oembedcore_preset_save($preset);
     $form_state['values']['pid'] = $preset->pid;
     //TODO: Some redirect?
-//    $form_state['redirect'] = "admin/build/panel-mini/$panel_mini->name/edit-context/next";
+    //    $form_state['redirect'] = "admin/structure/panel-mini/$panel_mini->name/edit-context/next";
   }
   else {
     drupal_set_message(t('Your changes have been saved.'));
     oembedcore_preset_save($preset);
   }
 
-  $form_state['redirect'] = 'admin/build/oembed/preset';
+  $form_state['redirect'] = 'admin/structure/oembed/preset';
 }
 
 /**
@@ -264,15 +286,15 @@ function oembedcore_export_preset(&$form_state, $preset) {
   if (!is_object($preset)) {
     $preset = oembedcore_preset_load($preset);
   }
-  drupal_set_title(check_plain($preset->name));
+  drupal_set_title($preset->name);
   $code = oembedcore_preset_export($preset);
 
   $lines = substr_count($code, "\n");
   $form['code'] = array(
-    '#type'          => 'textarea',
-    '#title'         => $preset->name,
+    '#type' => 'textarea',
+    '#title' => $preset->name,
     '#default_value' => $code,
-    '#rows'          => $lines,
+    '#rows' => $lines,
   );
   return $form;
 }
@@ -294,11 +316,17 @@ function oembedcore_delete_confirm_preset(&$form_state, $preset) {
     drupal_not_found();
     return;
   }
-  $form['name'] = array('#type' => 'value', '#value' => $preset->name);
-  $form['pid']  = array('#type' => 'value', '#value' => $preset->pid);
+  $form['name'] = array(
+    '#type' => 'value',
+    '#value' => $preset->name,
+  );
+  $form['pid']  = array(
+    '#type' => 'value',
+    '#value' => $preset->pid,
+  );
   return confirm_form($form,
     t('Are you sure you want to delete the preset "@name"?', array('@name' => $preset->name)),
-    !empty($_GET['destination']) ? $_GET['destination'] : 'admin/build/oembed/preset',
+    !empty($_GET['destination']) ? $_GET['destination'] : 'admin/structure/oembed/preset',
     t('This action cannot be undone.'),
     $submit, t('Cancel')
   );
@@ -311,7 +339,7 @@ function oembedcore_delete_confirm_preset_submit($form, &$form_state) {
   $preset = oembedcore_preset_load($form_state['values']['name']);
   if ($preset->pid == $form_state['values']['pid']) {
     oembedcore_preset_delete($preset);
-    $form_state['redirect'] = 'admin/build/oembed/preset';
+    $form_state['redirect'] = 'admin/structure/oembed/preset';
   }
 }
 
@@ -327,7 +355,7 @@ function oembedcore_enable_preset($preset) {
   //TODO: Extract this and move to oembedfield
   if (module_exists('content')) {
     content_clear_type_cache();
-    drupal_rebuild_theme_registry();
+    drupal_theme_rebuild();
   }
   drupal_goto();
 }
@@ -344,7 +372,7 @@ function oembedcore_disable_preset($preset) {
   //TODO: Extract this and move to oembedfield
   if (module_exists('content')) {
     content_clear_type_cache();
-    drupal_rebuild_theme_registry();
+    drupal_theme_rebuild();
   }
   drupal_goto();
 }
@@ -358,9 +386,18 @@ function oembedcore_disable_preset($preset) {
  */
 function oembedcore_list_provider($js = NULL) {
   $header = array(
-    array('data' => t('Title'),      'class' => 'oembedcore-provider-title'),
-    array('data' => t('Storage'),    'class' => 'oembedcore-provider-storage'),
-    array('data' => t('Operations'), 'class' => 'oembedcore-provider-operations')
+    array(
+      'data' => t('Title'),
+      'class' => array('oembedcore-provider-title'),
+    ),
+    array(
+      'data' => t('Storage'),
+      'class' => array('oembedcore-provider-storage'),
+    ),
+    array(
+      'data' => t('Operations'),
+      'class' => array('oembedcore-provider-operations'),
+    ),
   );
 
   $providers = oembedcore_provider_load_all();
@@ -372,37 +409,37 @@ function oembedcore_list_provider($js = NULL) {
     if (empty($provider->disabled)) {
       $operations[] = array(
         'title' => t('Edit'),
-        'href'  => 'admin/build/oembed/provider/' . $provider->name . '/edit',
+        'href' => 'admin/structure/oembed/provider/' . $provider->name . '/edit',
       );
       $operations[] = array(
         'title' => t('Export'),
-        'href'  => 'admin/build/oembed/provider/' . $provider->name . '/export',
+        'href' => 'admin/structure/oembed/provider/' . $provider->name . '/export',
       );
     }
 
     if ($provider->export_type == (EXPORT_IN_CODE | EXPORT_IN_DATABASE)) {
       $operations[] = array(
         'title' => t('Revert'),
-        'href'  => 'admin/build/oembed/provider/' . $provider->name . '/delete',
+        'href' => 'admin/structure/oembed/provider/' . $provider->name . '/delete',
       );
     }
     elseif ($provider->export_type != EXPORT_IN_CODE) {
       $operations[] = array(
         'title' => t('Delete'),
-        'href'  => 'admin/build/oembed/provider/' . $provider->name . '/delete',
+        'href' => 'admin/structure/oembed/provider/' . $provider->name . '/delete',
       );
     }
     elseif (empty($provider->disabled)) {
       $operations[] = array(
         'title' => t('Disable'),
-        'href'  => 'admin/build/oembed/provider/' . $provider->name . '/disable',
+        'href' => 'admin/structure/oembed/provider/' . $provider->name . '/disable',
         'query' => drupal_get_destination(),
       );
     }
     else {
       $operations[] = array(
         'title' => t('Enable'),
-        'href'  => 'admin/build/oembed/provider/' . $provider->name . '/enable',
+        'href' => 'admin/structure/oembed/provider/' . $provider->name . '/enable',
         'query' => drupal_get_destination(),
       );
     }
@@ -410,23 +447,23 @@ function oembedcore_list_provider($js = NULL) {
     $rows[$provider->name] = array(
       'data' => array(
         'name' => array(
-          'data'  => $provider->title,
-          'class' => 'oembedcore-provider-title',
+          'data' => $provider->title,
+          'class' => array('oembedcore-provider-title'),
         ),
         'storage' => array(
-          'data'  => ($provider->export_type == EXPORT_IN_CODE) ? t('In code') : t('In database'),
-          'class' => 'oembedcore-provider-storage',
+          'data' => ($provider->export_type == EXPORT_IN_CODE) ? t('In code') : t('In database'),
+          'class' => array('oembedcore-provider-storage'),
         ),
         'operations' => array(
-          'data'  => theme('links', $operations),
-          'class' => 'oembedcore-provider-operations',
+          'data' => theme('links', array('links' => $operations)),
+          'class' => array('oembedcore-provider-operations'),
         ),
       ),
-      'class' => 'oembedcore-provider-' . $provider->name . (!empty($provider->disabled) ? ' oembedcore-provider-disabled' : ''),
+      'class' => array('oembedcore-provider-' . $provider->name . (!empty($provider->disabled) ? ' oembedcore-provider-disabled' : '')),
     );
   }
 
-  $table = theme('table', $header, $rows, array('id' => 'oembedcore-list-providers'));
+  $table = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'oembedcore-list-providers')));
 
   drupal_add_css(drupal_get_path('module', 'oembedcore') . '/oembedcore.admin.css');
 
@@ -452,7 +489,7 @@ function oembedcore_edit_provider($provider) {
     $provider = oembedcore_provider_load($provider);
   }
   if ($provider) {
-    drupal_set_title(check_plain($provider->name));
+    drupal_set_title($provider->name);
   }
 
   return drupal_get_form('oembedcore_edit_form_provider', $provider);
@@ -461,57 +498,57 @@ function oembedcore_edit_provider($provider) {
 /**
  * Form to edit the settings of a provider.
  */
-function oembedcore_edit_form_provider(&$form_state, $provider) {
+function oembedcore_edit_form_provider($form, &$form_state, $provider) {
   $form = array();
 
   $form['pid'] = array(
-    '#type'  => 'value',
+    '#type' => 'value',
     '#value' => isset($provider->pid) ? $provider->pid : '',
   );
   $form['provider'] = array(
-    '#type'  => 'value',
+    '#type' => 'value',
     '#value' => $provider,
   );
 
   $form['name'] = array(
-    '#type'          => 'textfield',
-    '#size'          => 24,
+    '#type' => 'textfield',
+    '#size' => 24,
     '#default_value' => $provider->name,
-    '#title'         => t('Provider name'),
-    '#description'   => t('A unique machine-readable name used to identify this provider internally. It may only contain lowercase alphanumeric characters and underscores. No spaces or uppercase characters.'),
+    '#title' => t('Provider name'),
+    '#description' => t('A unique machine-readable name used to identify this provider internally. It may only contain lowercase alphanumeric characters and underscores. No spaces or uppercase characters.'),
   );
 
   $form['title'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Title'),
-    '#description'   => t('A human-readable title for the provider.'),
-    '#size'          => 32,
-    '#maxlength'     => 255,
-    '#required'      => TRUE,
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#description' => t('A human-readable title for the provider.'),
+    '#size' => 32,
+    '#maxlength' => 255,
+    '#required' => TRUE,
     '#default_value' => $provider->title,
   );
 
   $form['endpoint'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Endpoint'),
-    '#description'   => t('The endpoint where OEmbed requests are going to be sent.'),
-    '#size'          => 32,
-    '#maxlength'     => 255,
-    '#required'      => TRUE,
+    '#type' => 'textfield',
+    '#title' => t('Endpoint'),
+    '#description' => t('The endpoint where OEmbed requests are going to be sent.'),
+    '#size' => 32,
+    '#maxlength' => 255,
+    '#required' => TRUE,
     '#default_value' => $provider->endpoint,
   );
 
   $form['scheme'] = array(
-    '#type'          => 'textarea',
-    '#title'         => t('Schemes'),
-    '#description'   => t('Newline separated list of schemes like !example', array('!example' => 'http://*.revision3.com/*')),
-    '#required'      => TRUE,
+    '#type' => 'textarea',
+    '#title' => t('Schemes'),
+    '#description' => t('Newline separated list of schemes like !example', array('!example' => 'http://*.revision3.com/*')),
+    '#required' => TRUE,
     '#default_value' => $provider->scheme,
   );
 
   $label = empty($provider->pid) ? t('Save and proceed') : t('Save');
   $form['submit'] = array(
-    '#type'  => 'submit',
+    '#type' => 'submit',
     '#value' => $label,
   );
 
@@ -535,7 +572,8 @@ function oembedcore_edit_form_provider_validate($form, &$form_state) {
     if (!empty($values['pid']) && is_numeric($values['pid'])) {
       $query .= ' AND pid != ' . $values['pid'];
     }
-    if (db_result(db_query($query, $values['name']))) {
+    // TODO Please convert this statement to the D7 database API syntax.
+    if (db_query($query, $values['name'])->fetchField()) {
       form_error($form['name'], t('Provider name must be unique.'));
     }
   }
@@ -563,7 +601,7 @@ function oembedcore_edit_form_provider_submit($form, &$form_state) {
     oembedcore_provider_save($provider);
   }
 
-  $form_state['redirect'] = 'admin/build/oembed/provider';
+  $form_state['redirect'] = 'admin/structure/oembed/provider';
 }
 
 /**
@@ -573,15 +611,15 @@ function oembedcore_export_provider(&$form_state, $provider) {
   if (!is_object($provider)) {
     $provider = oembedcore_provider_load($provider);
   }
-  drupal_set_title(check_plain($provider->name));
+  drupal_set_title($provider->name);
   $code = oembedcore_provider_export($provider);
 
   $lines = substr_count($code, "\n");
   $form['code'] = array(
-    '#type'          => 'textarea',
-    '#title'         => $provider->name,
+    '#type' => 'textarea',
+    '#title' => $provider->name,
     '#default_value' => $code,
-    '#rows'          => $lines,
+    '#rows' => $lines,
   );
   return $form;
 }
@@ -603,11 +641,17 @@ function oembedcore_delete_confirm_provider(&$form_state, $provider) {
     drupal_not_found();
     return;
   }
-  $form['name'] = array('#type' => 'value', '#value' => $provider->name);
-  $form['pid']  = array('#type' => 'value', '#value' => $provider->pid);
+  $form['name'] = array(
+    '#type' => 'value',
+    '#value' => $provider->name,
+  );
+  $form['pid']  = array(
+    '#type' => 'value',
+    '#value' => $provider->pid,
+  );
   return confirm_form($form,
     t('Are you sure you want to delete the provider "@name"?', array('@name' => $provider->name)),
-    !empty($_GET['destination']) ? $_GET['destination'] : 'admin/build/oembed/provider',
+    !empty($_GET['destination']) ? $_GET['destination'] : 'admin/structure/oembed/provider',
     t('This action cannot be undone.'),
     $submit, t('Cancel')
   );
@@ -620,7 +664,7 @@ function oembedcore_delete_confirm_provider_submit($form, &$form_state) {
   $provider = oembedcore_provider_load($form_state['values']['name']);
   if ($provider->pid == $form_state['values']['pid']) {
     oembedcore_provider_delete($provider);
-    $form_state['redirect'] = 'admin/build/oembed/provider';
+    $form_state['redirect'] = 'admin/structure/oembed/provider';
   }
 }
 

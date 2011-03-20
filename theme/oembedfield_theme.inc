@@ -20,6 +20,7 @@ function template_preprocess_oembedfield_formatter_oembed_default(&$vars) {
   $presetname = substr($element['#formatter'], $presetname_start, $presetname_stop - $presetname_start);
 
   $attributes = array();
+  // TODO The second parameter to this function call should be an array.
   $url        = url($element['#item']['url'], $element['#item']);
   $preset     = oembedcore_preset_load($presetname);
   if (!empty($preset)) {
@@ -35,7 +36,7 @@ function template_preprocess_oembedfield_formatter_oembed_default(&$vars) {
 
   if (!$embed) {
     $embed = (object) array(
-      'type'         => 'link',
+      'type' => 'link',
       'original_url' => $url,
     );
   }
@@ -46,5 +47,6 @@ function template_preprocess_oembedfield_formatter_oembed_default(&$vars) {
     $embed->title = $element['#item']['display_url'];
   }
 
+  // TODO Please change this theme call to use an associative array for the $variables parameter.
   $vars['embed'] = theme('oembed', $embed);
 }

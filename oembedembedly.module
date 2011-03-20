@@ -12,12 +12,12 @@
 function oembedembedly_menu() {
   $items = array();
 
-  $items['admin/build/oembed/provider/embedly'] = array(
-    'title'            => 'Embed.ly',
-    'description'      => 'Settings for the Embed.ly provider.',
-    'page callback'    => 'drupal_get_form',
-    'page arguments'   => array('oembedembedly_admin'),
-    'type'             => MENU_LOCAL_TASK,
+  $items['admin/structure/oembed/provider/embedly'] = array(
+    'title' => 'Embed.ly',
+    'description' => 'Settings for the Embed.ly provider.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('oembedembedly_admin'),
+    'type' => MENU_LOCAL_TASK,
     'access arguments' => array('administer oembed presets'),
   );
 
@@ -45,7 +45,7 @@ function oembedembedly_default_oembedcore_provider() {
       $json = FALSE;
     }
 
-    cache_set('oembedly', $json, 'cache', time() + 3600 * ($json ? 24 : 6));
+    cache_set('oembedly', $json, 'cache', REQUEST_TIME + 3600 * ($json ? 24 : 6));
 
     if (variable_get('oembedembedly_default', TRUE)) {
       cache_clear_all('oembedcore:providers', 'cache');
@@ -69,14 +69,14 @@ function oembedembedly_default_oembedcore_provider() {
 
 function oembedembedly_admin() {
   $form['oembedembedly_default'] = array(
-    '#type'          => 'radios',
-    '#title'         => t('Providers enabled by default'),
+    '#type' => 'radios',
+    '#title' => t('Providers enabled by default'),
     '#default_value' => variable_get('oembedembedly_default', TRUE),
-    '#options'       => array(
+    '#options' => array(
       FALSE => t('Disabled'),
-      TRUE  => t('Enabled'),
+      TRUE => t('Enabled'),
     ),
-    '#description'   => t('This option defines whether providers should be enabled by default or not.'),
+    '#description' => t('This option defines whether providers should be enabled by default or not.'),
   );
   return system_settings_form($form);
 }

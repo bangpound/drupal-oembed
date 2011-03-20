@@ -2,5 +2,8 @@
 package = oEmbed
 name = oEmbed Core
 description = Common functionality for oEmbed client and provider
-core = 6.x
+core = 7.x
 dependencies[] = ctools
+files[] = oembedcore.admin.inc
+files[] = oembedcore.module
+files[] = theme/oembedcore_theme.inc

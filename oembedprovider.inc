@@ -108,8 +108,9 @@ function _oembedprovider_node_provider($provider, $url, $matches) {
 
     $node = node_load($nid);
     if ($node && node_access('view', $node, drupal_anonymous_user())) {
-      $author = user_load(array('uid' => $node->uid));
+      $author = user_load($node->uid);
       //TODO: The title and author data is currently returned as part of the rich-text html as well - this makes some clients show duplicate title and/or author information
+      // TODO Please change this theme call to use an associative array for the $variables parameter.
       $result = _oembedprovider_result('rich', array(
         'html' => theme('oembed_node', $node),
         'title' => $node->title,
